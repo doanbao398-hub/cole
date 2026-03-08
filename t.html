@@ -1,0 +1,946 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bức Tranh Bí Ẩn - Mẹ Của Thỏ Bông</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        font-family: "Lexend", sans-serif;
+        background: #000;
+      }
+
+      /* ================= INTRO ================= */
+
+      #intro-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("https://sf-static.upanhlaylink.com/img/image_202603072640b47ff1759c048136e0864f0c88fe.jpg");
+        background-size: cover;
+        background-position: center;
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: opacity 1s;
+      }
+
+      #intro-video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: none;
+      }
+
+      #start-btn {
+        padding: 30px 60px;
+        font-size: 40px;
+        font-weight: 900;
+        color: white;
+        background: linear-gradient(145deg, #ff7675, #d63031);
+        border: 8px solid #fff;
+        border-radius: 100px;
+        cursor: pointer;
+        box-shadow:
+          0 15px 0 #8b0000,
+          0 20px 40px rgba(0, 0, 0, 0.5);
+        transition: 0.2s;
+      }
+
+      #start-btn:hover {
+        transform: scale(1.1);
+      }
+      #start-btn:active {
+        transform: scale(0.9);
+      }
+
+      /* ================= BACKGROUND GAME ================= */
+
+      .game-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-image: url("https://sf-static.upanhlaylink.com/img/image_202603078cb55f0adcedfce7c5b9361d1c82df52.jpg");
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* ================= MAIN CONTENT ================= */
+
+      .main-content {
+        display: flex;
+        align-items: center;
+        gap: 60px;
+      }
+
+      /* ================= PUZZLE ================= */
+
+      .puzzle-container {
+        padding: 15px;
+        background: #4a6d2b;
+        border-radius: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        position: relative;
+      }
+
+      .puzzle-grid {
+        width: 700px;
+        height: 700px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 6px;
+        overflow: hidden;
+        border-radius: 20px;
+        background: #fff;
+      }
+
+      .piece {
+        background: #aabcc4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 180px;
+        font-weight: 900;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .piece img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: none;
+        position: absolute;
+        animation: appearImage 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.5s
+          forwards;
+        opacity: 0;
+      }
+
+      @keyframes appearImage {
+        0% {
+          transform: scale(0) rotate(-20deg);
+          opacity: 0;
+        }
+        100% {
+          transform: scale(1) rotate(0);
+          opacity: 1;
+        }
+      }
+
+      /* ================= CONFETTI ================= */
+
+      #confetti-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 100;
+        display: none;
+      }
+
+      /* ================= QUIZ PANEL ================= */
+
+      .right-panel {
+        width: 950px;
+        height: 720px;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #quiz-panel {
+        width: 100%;
+        padding: 70px 80px;
+        border-radius: 60px;
+        border: 10px solid #fff;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(15px);
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+        text-align: center;
+        display: none;
+        z-index: 10;
+        animation: popIn 0.5s;
+      }
+
+      @keyframes popIn {
+        0% {
+          transform: scale(0.5);
+          opacity: 0;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      /* ===== EFFECT GHÉP TRANH ===== */
+
+      @keyframes blinkCrazy {
+        0%,
+        100% {
+          opacity: 1;
+          filter: brightness(1);
+        }
+        50% {
+          opacity: 0.2;
+          filter: brightness(3);
+        }
+      }
+
+      @keyframes flyUp {
+        0% {
+          transform: translateY(0) scale(1) rotate(0deg);
+        }
+        100% {
+          transform: translateY(-600px) scale(1.8) rotate(720deg);
+        }
+      }
+
+      @keyframes explodeBoom {
+        0% {
+          transform: scale(1);
+          filter: brightness(1);
+        }
+        50% {
+          transform: scale(2.5);
+          filter: brightness(4);
+        }
+        100% {
+          transform: scale(0);
+          opacity: 0;
+        }
+      }
+
+      .merge-blink {
+        animation: blinkCrazy 0.15s infinite;
+      }
+
+      .merge-fly {
+        animation: flyUp 2s ease-in-out forwards;
+      }
+
+      .merge-explode {
+        animation: explodeBoom 1s ease-out forwards;
+      }
+      /* ================= STATUS ICON ================= */
+
+      #status-icon {
+        display: none;
+        font-size: 250px;
+        font-weight: 900;
+        z-index: 11;
+      }
+
+      .icon-correct {
+        color: #2ecc71;
+        animation: bounce 0.5s 2;
+      }
+
+      .icon-wrong {
+        color: #e74c3c;
+        animation: shake 0.3s;
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.3);
+        }
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-15px);
+        }
+        75% {
+          transform: translateX(15px);
+        }
+      }
+
+      /* ================= QUESTION ================= */
+
+      #question-text {
+        font-size: 50px;
+        font-weight: 900;
+        color: #e74c3c;
+        margin-bottom: 50px;
+        line-height: 1.7;
+        text-align: center;
+        padding: 20px 40px;
+        max-width: 780px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      /*moi*/
+      #finish-btn {
+        margin-top: 40px;
+        padding: 20px 60px;
+        font-size: 36px;
+        font-weight: 900;
+        border: none;
+        border-radius: 60px;
+        background: linear-gradient(145deg, #00c6ff, #0072ff);
+        color: white;
+        cursor: pointer;
+        display: none;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        transition: 0.3s;
+      }
+
+      #finish-btn:hover {
+        transform: scale(1.1);
+      }
+
+      /* ================= OPTIONS ================= */
+
+      .option-btn {
+        display: block;
+        width: 100%;
+        padding: 35px;
+        margin: 25px 0;
+        border-radius: 80px;
+        border: 4px solid #fff;
+        font-size: 40px;
+        font-weight: 900;
+        color: white;
+        cursor: pointer;
+        box-shadow: 0 10px 0 rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s;
+      }
+
+      .option-btn:hover {
+        transform: scale(1.1);
+      }
+
+      .blue {
+        background: #3498db;
+      }
+      .green {
+        background: #2ecc71;
+      }
+      .yellow {
+        background: #f39c12;
+      }
+
+      /* ================= VIDEO REWARD ================= */
+
+      #video-container {
+        width: 750px;
+        height: 750px;
+        display: none;
+        position: absolute;
+        z-index: 20;
+        mix-blend-mode: multiply;
+        pointer-events: none;
+      }
+
+      #reward-video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      /* ================= SLOT ================= */
+
+      .selection-footer {
+        position: absolute;
+        bottom: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 25px 60px;
+        border-radius: 40px;
+        display: flex;
+        gap: 35px;
+      }
+
+      .slot {
+        width: 100px;
+        height: 100px;
+        background: #1a1a1a;
+        border-radius: 25px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 50px;
+        font-weight: 900;
+        color: #9cffa5;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .slot:hover {
+        transform: scale(1.2);
+      }
+
+      .slot.active {
+        transform: scale(1.4);
+        background: #fff;
+        color: #3498db;
+        box-shadow: 0 0 40px #fff;
+      }
+
+      .slot.hidden {
+        visibility: hidden;
+        opacity: 0;
+        transform: scale(0);
+        transition: 0.7s;
+      }
+
+      /* ================= ENDING EFFECT ================= */
+
+      #ending-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        z-index: 999;
+      }
+
+      #final-image {
+        width: 900px;
+        opacity: 0;
+        transform: scale(0.2);
+        transition: all 1.5s;
+      }
+
+      #final-video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- INTRO -->
+
+    <div id="intro-overlay">
+      <button id="start-btn" onclick="playIntro()">BẮT ĐẦU TRÒ CHƠI</button>
+
+      <video id="intro-video" src="lo.mp4" playsinline></video>
+    </div>
+
+    <!-- AUDIO -->
+
+    <audio id="bg-music" src="nhac.mp3" loop></audio>
+    <audio id="click-sound" src="cute.mp3"></audio>
+    <audio id="ending-sound" src="thanhtuu.mp3"></audio>
+    <audio id="merge-sound" src="ghe.mp3"></audio>
+
+    <!-- GAME -->
+
+    <div class="game-background">
+      <canvas id="confetti-canvas"></canvas>
+
+      <div class="main-content">
+        <!-- PUZZLE -->
+
+        <div class="puzzle-container">
+          <div class="puzzle-grid">
+            <div class="piece" id="p1">
+              ?
+              <img
+                id="img1"
+                src="https://sf-static.upanhlaylink.com/img/image_20260308906811cf2c6d2c184c3f8f00a34177a2.jpg"
+              />
+            </div>
+
+            <div class="piece" id="p2">
+              ?
+              <img
+                id="img2"
+                src="https://sf-static.upanhlaylink.com/img/image_20260308deaa060491f1f5ba5844244fb05aff12.jpg"
+                alt="grid_r1_c2 (1).png"
+              />
+            </div>
+
+            <div class="piece" id="p3">
+              ?
+              <img
+                id="img3"
+                src="https://sf-static.upanhlaylink.com/img/image_2026030889f81cae611e36cef33c22f1103ad2ed.jpg"
+              />
+            </div>
+
+            <div class="piece" id="p4">
+              ?
+              <img
+                id="img4"
+                src="https://sf-static.upanhlaylink.com/img/image_202603088d17df2af384263394f55373fad54106.jpg"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- QUIZ -->
+
+        <div class="right-panel">
+          <div id="quiz-panel">
+            <div id="status-icon"></div>
+
+            <div id="quiz-content">
+              <div id="question-text"></div>
+
+              <div id="options-container"></div>
+            </div>
+          </div>
+
+          <!-- VIDEO -->
+
+          <div id="video-container">
+            <video id="reward-video" playsinline></video>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLOT -->
+
+      <div class="selection-footer">
+        <div class="slot" id="slot1" onclick="openQuiz(1)">1</div>
+        <div class="slot" id="slot2" onclick="openQuiz(2)">2</div>
+        <div class="slot" id="slot3" onclick="openQuiz(3)">3</div>
+        <div class="slot" id="slot4" onclick="openQuiz(4)">4</div>
+      </div>
+    </div>
+
+    <!-- ENDING -->
+
+    <div id="ending-overlay">
+      <img
+        id="final-image"
+        src="https://sf-static.upanhlaylink.com/img/image_20260308bcc98326ec30fd94da5ff4d64ad6e0ca.jpg"
+      />
+
+      <button id="finish-btn">HOÀN THÀNH</button>
+
+      <video id="final-video" src="lolin.mp4" playsinline></video>
+    </div>
+    <script>
+      /* ================= QUIZ DATA ================= */
+
+      const quizData = {
+        1: {
+          question: "Ai là mẹ của thỏ bông?",
+          options: [
+            { text: "A. Bà", correct: false },
+            { text: "B. Bé", correct: true },
+            { text: "C. Cô giáo", correct: false },
+          ],
+        },
+
+        2: {
+          question: "Mẹ thỏ bông làm gì khi trời mưa?",
+          options: [
+            { text: "A. Che ô cho con", correct: true },
+            { text: "B. Đội mũ cho con", correct: false },
+            { text: "C. Bế con chạy", correct: false },
+          ],
+        },
+
+        3: {
+          question:
+            '"Bà bận nấu cơm, bé chơi một mình. Bé đóng vai mẹ, lấy thỏ bông làm em bé."',
+          options: [
+            { text: "A. Đọc đúng", correct: true },
+            { text: "B. Đọc sai", correct: false },
+          ],
+        },
+
+        4: {
+          question: "Khi trời nắng mẹ làm gì cho con?",
+          options: [
+            { text: "A. Đội mũ cho con", correct: true },
+            { text: "B. Mang giày", correct: false },
+            { text: "C. Mặc áo ấm", correct: false },
+          ],
+        },
+      };
+
+      /* ================= ELEMENT ================= */
+
+      const introOverlay = document.getElementById("intro-overlay");
+      const introVideo = document.getElementById("intro-video");
+      const startBtn = document.getElementById("start-btn");
+
+      const bgMusic = document.getElementById("bg-music");
+      const clickSound = document.getElementById("click-sound");
+      const endingSound = document.getElementById("ending-sound");
+
+      const quizPanel = document.getElementById("quiz-panel");
+      const statusIcon = document.getElementById("status-icon");
+
+      const videoContainer = document.getElementById("video-container");
+      const videoElement = document.getElementById("reward-video");
+
+      const finalOverlay = document.getElementById("ending-overlay");
+      const finalImage = document.getElementById("final-image");
+      const finalVideo = document.getElementById("final-video");
+      const finishBtn = document.getElementById("finish-btn");
+
+      let currentPiece = 0;
+      let lastResult = false;
+
+      /* ================= INTRO ================= */
+
+      function playIntro() {
+        startBtn.style.display = "none";
+        introVideo.style.display = "block";
+
+        introVideo.play();
+
+        introVideo.onended = function () {
+          setTimeout(() => {
+            skipIntro();
+          }, 8000);
+        };
+      }
+
+      function skipIntro() {
+        introOverlay.style.opacity = "0";
+
+        setTimeout(() => {
+          introOverlay.style.display = "none";
+
+          bgMusic.volume = 0.15;
+          bgMusic.play();
+        }, 1000);
+      }
+
+      /* ================= CLICK ================= */
+
+      function playClick() {
+        clickSound.currentTime = 0;
+        clickSound.volume = 0.4;
+        clickSound.play();
+
+        setTimeout(() => {
+          clickSound.pause();
+        }, 400);
+      }
+
+      /* ================= OPEN QUIZ ================= */
+
+      function openQuiz(num) {
+        playClick();
+
+        document
+          .querySelectorAll(".slot")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById("slot" + num).classList.add("active");
+
+        currentPiece = num;
+
+        const data = quizData[num];
+
+        quizPanel.style.display = "block";
+        videoContainer.style.display = "none";
+
+        document.getElementById("quiz-content").style.display = "block";
+        statusIcon.style.display = "none";
+
+        document.getElementById("question-text").innerText = data.question;
+
+        const container = document.getElementById("options-container");
+        container.innerHTML = "";
+
+        data.options.forEach((opt, index) => {
+          const btn = document.createElement("button");
+
+          btn.className = `option-btn ${["blue", "green", "yellow"][index]}`;
+          btn.innerText = opt.text;
+
+          btn.onclick = () => checkAnswer(opt.correct);
+
+          container.appendChild(btn);
+        });
+      }
+
+      /* ================= CHECK ANSWER ================= */
+
+      function checkAnswer(isCorrect) {
+        playClick();
+
+        lastResult = isCorrect;
+
+        document.getElementById("quiz-content").style.display = "none";
+        statusIcon.style.display = "block";
+
+        if (isCorrect) {
+          statusIcon.innerHTML = "✔";
+          statusIcon.className = "icon-correct";
+
+          /* ✅ CÂU 3 dùng video riêng */
+          if (currentPiece == 3) {
+            videoElement.src = "llm.mp4";
+          } else {
+            videoElement.src = "vloli.mp4";
+          }
+
+          createConfetti();
+        } else {
+          statusIcon.innerHTML = "✘";
+          statusIcon.className = "icon-wrong";
+
+          videoElement.src = "vloli2.mp4";
+        }
+
+        setTimeout(() => {
+          if (isCorrect) {
+            document.getElementById("p" + currentPiece).style.color =
+              "transparent";
+            document.getElementById("img" + currentPiece).style.display =
+              "block";
+          }
+
+          quizPanel.style.display = "none";
+          videoContainer.style.display = "block";
+
+          bgMusic.volume = 0.05;
+
+          videoElement.play();
+        }, 1200);
+      }
+
+      /* ================= VIDEO END ================= */
+
+      videoElement.onended = function () {
+        videoContainer.style.display = "none";
+        bgMusic.volume = 0.15;
+
+        if (lastResult) {
+          document
+            .getElementById("slot" + currentPiece)
+            .classList.add("hidden");
+
+          checkGameComplete();
+        } else {
+          quizPanel.style.display = "block";
+          document.getElementById("quiz-content").style.display = "block";
+          statusIcon.style.display = "none";
+        }
+      };
+
+      /* ================= CHECK COMPLETE ================= */
+
+      function checkGameComplete() {
+        let hiddenCount = document.querySelectorAll(".slot.hidden").length;
+
+        if (hiddenCount == 4) {
+          setTimeout(() => {
+            startMergeEffect();
+          }, 1200);
+        }
+        const pieces = document.querySelectorAll(".piece img");
+
+        pieces.forEach((p) => {
+          p.style.display = "block";
+          p.style.opacity = "1";
+          p.classList.add("merge-blink");
+        });
+      }
+
+      /* ================= ENDING EFFECT ================= */
+
+      function startEnding() {
+        bgMusic.pause();
+
+        const pieces = document.querySelectorAll(".piece img");
+
+        pieces.forEach((p) => {
+          p.style.transition = "1.5s";
+          p.style.transform = "scale(2)";
+          p.style.filter = "brightness(2)";
+        });
+
+        setTimeout(() => {
+          pieces.forEach((p) => {
+            p.style.opacity = "0";
+          });
+        }, 2000);
+
+        setTimeout(() => {
+          document.querySelector(".game-background").style.display = "none";
+
+          showFinalImage();
+          finishBtn.onclick = function () {
+            finishBtn.style.display = "none";
+            showFinalVideo();
+          };
+        }, 3500);
+      }
+      function startMergeEffect() {
+        bgMusic.pause();
+
+        const mergeSound = document.getElementById("merge-sound");
+        mergeSound.volume = 1;
+        mergeSound.play();
+
+        const pieces = document.querySelectorAll(".piece img");
+
+        // Nhấp nháy điên cuồng
+        pieces.forEach((p) => p.classList.add("merge-blink"));
+
+        // Sau 2s bắt đầu bay
+        setTimeout(() => {
+          pieces.forEach((p) => {
+            p.classList.remove("merge-blink");
+            p.classList.add("merge-fly");
+          });
+        }, 2000);
+
+        // Sau 4s nổ tung
+        setTimeout(() => {
+          pieces.forEach((p) => {
+            p.classList.remove("merge-fly");
+            p.classList.add("merge-explode");
+          });
+        }, 4000);
+
+        // Khi nhạc kết thúc → vào ending
+        mergeSound.onended = () => {
+          document.querySelector(".game-background").style.display = "none";
+          showFinalImage();
+          finishBtn.onclick = function () {
+            finishBtn.style.display = "none";
+            showFinalVideo();
+          };
+        };
+      }
+
+      /* ================= FINAL IMAGE ================= */
+
+      function showFinalImage() {
+        finalOverlay.style.display = "flex";
+
+        endingSound.play();
+
+        setTimeout(() => {
+          finalImage.style.opacity = "1";
+          finalImage.style.transform = "scale(1)";
+        }, 200);
+
+        finishBtn.style.display = "block";
+      }
+
+      /* ================= FINAL VIDEO ================= */
+
+      function showFinalVideo() {
+        finalImage.style.display = "none";
+
+        finalVideo.style.display = "block";
+
+        finalVideo.play();
+
+        finalVideo.onended = function () {
+          exitWebsite();
+        };
+      }
+
+      /* ================= EXIT ================= */
+
+      function exitWebsite() {
+        window.open("", "_self");
+        window.close();
+
+        setTimeout(() => {
+          location.href = "about:blank";
+        }, 1000);
+      }
+
+      /* ================= CONFETTI ================= */
+
+      const canvas = document.getElementById("confetti-canvas");
+      const ctx = canvas.getContext("2d");
+
+      let particles = [];
+
+      function createConfetti() {
+        canvas.style.display = "block";
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        for (let i = 0; i < 120; i++) {
+          particles.push({
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+
+            size: Math.random() * 10 + 5,
+
+            color: `hsl(${Math.random() * 360},70%,50%)`,
+
+            velX: (Math.random() - 0.5) * 15,
+            velY: (Math.random() - 0.5) * 15,
+
+            gravity: 0.2,
+          });
+        }
+
+        animateConfetti();
+      }
+
+      function animateConfetti() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach((p, i) => {
+          p.velY += p.gravity;
+          p.x += p.velX;
+          p.y += p.velY;
+
+          ctx.fillStyle = p.color;
+          ctx.fillRect(p.x, p.y, p.size, p.size);
+
+          if (p.y > canvas.height) particles.splice(i, 1);
+        });
+
+        if (particles.length > 0) {
+          requestAnimationFrame(animateConfetti);
+        } else {
+          canvas.style.display = "none";
+        }
+      }
+    </script>
+  </body>
+</html>
